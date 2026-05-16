@@ -47,7 +47,7 @@ La manière la plus simple de lancer Nebra est d'utiliser Docker Compose.
 ### Installation
 1. Clonez le dépôt :
    ```bash
-   git clone https://github.com/votre-repo/nebra.git
+   git clone https://github.com/sebbemercier/Nebra
    cd nebra
    ```
 
