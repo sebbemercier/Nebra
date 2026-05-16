@@ -1,6 +1,7 @@
-# 🌌 Nebra - Open-Source IT Asset Management (ITAM)
+# <img src="logo/logo-avec-texte.png" alt="Nebra Logo" width="400">
 
-Nebra est une plateforme moderne et puissante de gestion d'inventaire informatique (ITAM) et de CMDB conçue pour les entreprises. Elle permet de suivre le cycle de vie complet de vos équipements, de l'achat à la mise au rebut, tout en intégrant des données techniques en temps réel via un agent intelligent.
+Nebra est une plateforme moderne et puissante de gestion d'inventaire informatique (ITAM) et de CMDB conçue pour les entreprises.
+ Elle permet de suivre le cycle de vie complet de vos équipements, de l'achat à la mise au rebut, tout en intégrant des données techniques en temps réel via un agent intelligent.
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)

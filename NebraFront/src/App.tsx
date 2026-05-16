@@ -116,8 +116,12 @@ function App() {
                 </CardHeader>
                 <CardContent>
                   {!token ? (
-                    <AuthForms
-                      onLogin={(email, pass) => loginMutation.mutate({ userEmail: email, userPassword: pass })}
+                    <>
+                      <div className="mb-6 flex justify-center">
+                        <img src="/logo-full.png" alt="Nebra Logo" className="h-16 object-contain" />
+                      </div>
+                      <AuthForms
+                        onLogin={(email, pass) => loginMutation.mutate({ userEmail: email, userPassword: pass })}
                       onRegister={(email, name, pass) =>
                         registerMutation.mutate({ userEmail: email, userFullName: name, userPassword: pass })
                       }

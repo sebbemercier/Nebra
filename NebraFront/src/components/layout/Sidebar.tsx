@@ -11,8 +11,8 @@ export function Sidebar() {
 
   return (
     <aside className="border-r border-border/80 px-2 py-4">
-      <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-nebra-blue to-network-teal text-sm font-bold">
-        N
+      <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-card overflow-hidden border border-border/50">
+        <img src="/logo-icon.png" alt="Nebra" className="h-7 w-7 object-contain" />
       </div>
       <nav className="space-y-2">
         {navItems.map((item, index) => (
