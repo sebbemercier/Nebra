@@ -1,7 +1,15 @@
+import enum
 from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel
+
+
+class AssetStatus(str, enum.Enum):
+    STOCK = "stock"
+    DEPLOYED = "deployed"
+    MAINTENANCE = "maintenance"
+    ARCHIVED = "archived"
 
 
 class AssetCreate(BaseModel):
@@ -9,8 +17,18 @@ class AssetCreate(BaseModel):
     asset_type: str
     serial_number: str
     location: str
-    status: str = "unverified"
+    status: AssetStatus = AssetStatus.STOCK
     warranty_expiry: datetime | None = None
+
+
+class ActivityRead(BaseModel):
+    id: UUID
+    action: str
+    details: str | None
+    actor_id: UUID
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
 
 
 class AssetRead(BaseModel):
@@ -19,10 +37,11 @@ class AssetRead(BaseModel):
     asset_type: str
     serial_number: str
     location: str
-    status: str
+    status: AssetStatus
     warranty_expiry: datetime | None
     hardware_info: dict | None
     owner_id: UUID
+    assigned_user_id: UUID | None
     created_at: datetime
 
     model_config = {"from_attributes": True}

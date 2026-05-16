@@ -1,172 +1,81 @@
-# Système de Gestion d'Inventaire IT - Nebra - Stack Technique Recommandée
+# 🌌 Nebra - Open-Source IT Asset Management (ITAM)
 
-## Vue d'ensemble
-Ce document décrit une stack moderne, scalable et prête pour la production pour construire un système d'inventaire IT open source (type CMDB).
+Nebra est une plateforme moderne et puissante de gestion d'inventaire informatique (ITAM) et de CMDB conçue pour les entreprises. Elle permet de suivre le cycle de vie complet de vos équipements, de l'achat à la mise au rebut, tout en intégrant des données techniques en temps réel via un agent intelligent.
 
----
-
-## ✅ Décisions validées pour le démarrage
-
-- **Auth MVP** : JWT local (email/mot de passe + rôles), OIDC plus tard
-- **Base de données** : PostgreSQL dans la codebase, compatibilité CockroachDB visée
-- **Backend** : structure modulaire par domaine avec couches service/repository
-- **Frontend** : React + TypeScript + Tailwind + fondations shadcn/ui
-- **Data fetching** : TanStack Query + client API typé
-- **Async / temps réel** : architecture préparée, activation dans une phase suivante
+![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
-## ⚡ Démarrage rapide (état actuel du repo)
+## ✨ Fonctionnalités Clés
 
-### Backend (FastAPI)
-1. `cd Backend`
-2. Copier `.env.example` en `.env` puis ajuster les variables
-3. `python -m pip install -e .`
-4. `uvicorn app.main:app --reload`
+### 📦 Gestion de Stock & Inventaire
+- **Cycle de Vie Complet** : Suivez vos assets à travers différents états : `EN STOCK`, `DÉPLOYÉ`, `MAINTENANCE`, `ARCHIVÉ`.
+- **Check-in / Check-out** : Attribuez du matériel à vos collaborateurs en un clic et suivez les mouvements de stock.
+- **Audit Trail** : Historique complet et indélébile de chaque mouvement ou modification sur un équipement.
 
-API disponible sur `http://localhost:8000` et healthcheck sur `GET /api/v1/health`.
+### 🤖 Agent Intelligent (Nebra Agent)
+- **Auto-découverte** : Collecte automatique des informations hardware (CPU, RAM, Disques, Réseau).
+- **Heartbeat** : Monitoring en temps réel de l'état "Online/Offline" des machines.
+- **Preuve de Vie** : Alerte si un asset marqué "En Stock" est détecté comme actif sur le réseau.
 
-### Frontend (Vite + Bun)
-1. `cd NebraFront`
-2. `bun install`
-3. `bun run dev`
-
-Frontend disponible sur `http://localhost:5173`.
-
----
-
-## 🧠 Architecture principale
-
-### Backend
-- Python (FastAPI)
-- SQLAlchemy 2.0 / SQLModel
-- PostgreSQL
-
-### Frontend
-- React (Next.js)
-- TailwindCSS
-
-### Temps réel
-- WebSockets (natif FastAPI ou via Redis)
-
-### Tâches asynchrones
-- Celery + Redis (ou Dramatiq)
-
-### Agent
-- Python (version initiale)
-- Futur : Go ou Rust (performance)
-
-### Infrastructure
-- Docker / Docker Compose
-- Nginx ou Traefik
+### 🔐 Sécurité Enterprise
+- **Rôles Granulaires** :
+    - **Admin** : Contrôle total sur l'inventaire, les utilisateurs et la configuration.
+    - **Technicien** : Gestion opérationnelle (Ajout, Check-in/out, Maintenance).
+- **Authentification Sécurisée** : JWT pour les utilisateurs et clés d'API dédiées pour les agents.
 
 ---
 
-## 🧱 Composants du système
+## 🛠️ Stack Technique
 
-### 1. API principale
-- Gestion des assets (machines)
-- Gestion des utilisateurs
-- Relations
-- Logs / historique
-
-### 2. Agent
-- Collecte hardware (CPU, RAM, OS)
-- Inventaire des logiciels
-- Infos réseau (IP, MAC)
-- Heartbeat (online/offline)
-- Mise à jour automatique
-
-### 3. Service de découverte réseau
-- Scan IP
-- SNMP (switchs, imprimantes)
-- SSH / WMI
-
-### 4. Workers asynchrones
-- Scan réseau
-- Import CSV
-- Synchronisation AD / Entra ID
-- Alertes
-
-### 5. Temps réel
-- Statut des machines
-- Alertes
-- Mises à jour en direct
+- **Backend** : FastAPI (Python 3.11), SQLAlchemy 2.0, PostgreSQL 18 / CockroachDB.
+- **Frontend** : React 19, TailwindCSS, shadcn/ui, TanStack Query.
+- **Agent** : Python 3.11+, psutil.
+- **Infrastructure** : Docker, Docker Compose.
 
 ---
 
-## 🗄️ Base de données (PostgreSQL)
+## 🚀 Démarrage Rapide
 
-### Tables principales
-- assets
-- asset_types
-- users
-- locations
-- networks
-- installed_software
-- audit_logs
-- alerts
+La manière la plus simple de lancer Nebra est d'utiliser Docker Compose.
 
----
+### Pré-requis
+- Docker et Docker Compose installés.
 
-## 🔐 Authentification
-- OpenID Connect (OIDC)
-- Microsoft Entra ID / Active Directory
-- Authentification locale en fallback
+### Installation
+1. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/votre-repo/nebra.git
+   cd nebra
+   ```
 
-Librairies :
-- authlib
-- fastapi-users
+2. Lancez la stack complète :
+   ```bash
+   docker-compose up --build
+   ```
 
----
-
-## 📱 Intégration QR Code
-- Association rapide des équipements
-- Inventaire physique
+3. Accédez aux interfaces :
+   - **Frontend** : `http://localhost:5173`
+   - **API Documentation (Swagger)** : `http://localhost:8000/docs`
 
 ---
 
-## 🔌 API externe
-- Webhooks
-- Intégrations (ITSM, outils financiers)
-- Automatisation
+## 🗺️ Roadmap
+
+- [ ] **Phase 1** : Gestion de stock de base et Check-in/out (Actuel).
+- [ ] **Phase 2** : Système d'alertes en temps réel via WebSockets.
+- [ ] **Phase 3** : Import/Export CSV avancé et synchronisation AD/Entra ID.
+- [ ] **Phase 4** : Application mobile pour scan de QR Codes et inventaire physique.
 
 ---
 
-## 🔥 Points différenciants
-- Interface moderne
-- Temps réel natif
-- API-first
-- Découverte automatique intelligente
-- Historique complet
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une Issue ou une Pull Request pour améliorer Nebra.
 
 ---
 
-## ⚠️ Pièges à éviter
-1. Sous-estimer la complexité de l’agent
-2. Mauvais schéma de base de données
-3. Trop complexifier dès le début
+## 📄 Licence
 
----
-
-## 🚀 Stratégie de développement
-
-### Phase 1 (MVP)
-- CRUD assets
-- Agent basique
-- UI simple
-
-### Phase 2
-- Temps réel
-- Authentification (OIDC)
-- Découverte réseau
-
-### Phase 3
-- Intégrations avancées
-- Optimisation performance
-- Réécriture agent (optionnel)
-
----
-
-## 🧩 Notes finales
-Prioriser une architecture modulaire pour permettre l’évolution sans refonte complète.
+Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
