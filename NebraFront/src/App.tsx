@@ -9,6 +9,7 @@ import { AssetTable } from '@/components/dashboard/AssetTable'
 import { StatsOverview } from '@/components/dashboard/StatsOverview'
 import { AuthForms } from '@/components/auth/AuthForms'
 import { AssetForm } from '@/components/dashboard/AssetForm'
+import { Notifications } from '@/components/dashboard/Notifications'
 import { useRealtime } from '@/lib/use-realtime'
 import { cn } from '@/lib/utils'
 
@@ -162,6 +163,7 @@ function App() {
           </main>
         </div>
       </div>
+      <Notifications lastEvent={lastEvent} />
     </div>
   )
 }

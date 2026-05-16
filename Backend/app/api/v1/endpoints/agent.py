@@ -72,14 +72,32 @@ async def heartbeat(
     
     asset.hardware_info = payload.hardware_info
     db.commit()
+
+    # Detect alerts
+    alerts = []
+    hw = payload.hardware_info
     
-    # Broadcast to all connected UI clients
+    # Check RAM
+    if hw.get("memory", {}).get("percentage", 0) > 90:
+        alerts.append({"type": "MEMORY_HIGH", "message": f"High RAM usage: {hw['memory']['percentage']}%"})
+    
+    # Check Disks
+    for disk in hw.get("disks", []):
+        if disk.get("percentage", 0) > 90:
+            alerts.append({"type": "DISK_FULL", "message": f"Disk {disk['mountpoint']} is nearly full ({disk['percentage']}%)"})
+            
+    # Check CPU
+    if hw.get("cpu", {}).get("total_usage", 0) > 95:
+        alerts.append({"type": "CPU_HIGH", "message": f"Critical CPU usage: {hw['cpu']['total_usage']}%"})
+    
+    # Broadcast heartbeat
     await manager.broadcast({
         "type": "HEARTBEAT",
         "asset_id": str(asset.id),
         "serial_number": asset.serial_number,
         "status": "online",
-        "hostname": asset.name
+        "hostname": asset.name,
+        "alerts": alerts
     })
     
     return {"status": "ok"}

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Asset, apiClient } from '@/lib/api'
 import { Button } from '@/components/ui/button'
-import { History, UserPlus, Package } from 'lucide-react'
+import { History, UserPlus, Package, AlertTriangle } from 'lucide-react'
 
 interface AssetTableProps {
   assets: Asset[]
@@ -63,12 +63,18 @@ export function AssetTable({ assets, isLoading, error, token }: AssetTableProps)
             <tr key={asset.id} className="border-t border-border/70 text-muted-foreground">
               <td className="px-3 py-2 text-nebra-blue">{asset.id.slice(0, 8)}</td>
               <td className="px-3 py-2 text-slate-100">
-                {asset.name}
-                {asset.hardware_info?.os?.system && (
-                  <span className="ml-2 text-[10px] text-muted-foreground">
-                    ({asset.hardware_info.os.system})
-                  </span>
-                )}
+                <div className="flex items-center gap-2">
+                  {asset.name}
+                  {asset.hardware_info?.os?.system && (
+                    <span className="text-[10px] text-muted-foreground">
+                      ({asset.hardware_info.os.system})
+                    </span>
+                  )}
+                  {(asset.hardware_info?.cpu?.total_usage > 90 || 
+                    asset.hardware_info?.memory?.percentage > 90) && (
+                    <AlertTriangle className="h-3.5 w-3.5 text-red-500 animate-pulse" title="High resource usage detected" />
+                  )}
+                </div>
               </td>
               <td className="px-3 py-2">{asset.asset_type}</td>
               <td className="px-3 py-2">
