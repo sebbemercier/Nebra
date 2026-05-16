@@ -21,9 +21,19 @@ export type Asset = {
   asset_type: string
   serial_number: string
   location: string
-  status: string
+  status: 'stock' | 'deployed' | 'maintenance' | 'archived'
   warranty_expiry: string | null
+  hardware_info: any | null
   owner_id: string
+  assigned_user_id: string | null
+  created_at: string
+}
+
+export type AssetActivity = {
+  id: string
+  action: string
+  details: string | null
+  actor_id: string
   created_at: string
 }
 
@@ -89,5 +99,19 @@ export const apiClient = {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify(payload),
+    }),
+  checkoutAsset: (assetId: string, assignedUserId: string, token: string, details?: string) =>
+    request<Asset>(`/api/v1/assets/${assetId}/checkout?assigned_user_id=${assignedUserId}${details ? `&details=${details}` : ''}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  checkinAsset: (assetId: string, token: string, details?: string) =>
+    request<Asset>(`/api/v1/assets/${assetId}/checkin${details ? `?details=${details}` : ''}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  getAssetHistory: (assetId: string, token: string) =>
+    request<AssetActivity[]>(`/api/v1/assets/${assetId}/history`, {
+      headers: { Authorization: `Bearer ${token}` },
     }),
 }

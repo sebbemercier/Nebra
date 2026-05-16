@@ -139,6 +139,7 @@ function App() {
                         assets={filteredAssets}
                         isLoading={assetsQuery.isPending}
                         error={assetsQuery.error as Error}
+                        token={token}
                       />
                     </>
                   )}
