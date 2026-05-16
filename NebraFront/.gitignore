@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+.lucide/
+
+# Build
+dist/
+dist-ssr/
+*.local
+
+# Environment
+.env
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -5,6 +5,36 @@ Ce document décrit une stack moderne, scalable et prête pour la production pou
 
 ---
 
+## ✅ Décisions validées pour le démarrage
+
+- **Auth MVP** : JWT local (email/mot de passe + rôles), OIDC plus tard
+- **Base de données** : PostgreSQL dans la codebase, compatibilité CockroachDB visée
+- **Backend** : structure modulaire par domaine avec couches service/repository
+- **Frontend** : React + TypeScript + Tailwind + fondations shadcn/ui
+- **Data fetching** : TanStack Query + client API typé
+- **Async / temps réel** : architecture préparée, activation dans une phase suivante
+
+---
+
+## ⚡ Démarrage rapide (état actuel du repo)
+
+### Backend (FastAPI)
+1. `cd Backend`
+2. Copier `.env.example` en `.env` puis ajuster les variables
+3. `python -m pip install -e .`
+4. `uvicorn app.main:app --reload`
+
+API disponible sur `http://localhost:8000` et healthcheck sur `GET /api/v1/health`.
+
+### Frontend (Vite + Bun)
+1. `cd NebraFront`
+2. `bun install`
+3. `bun run dev`
+
+Frontend disponible sur `http://localhost:5173`.
+
+---
+
 ## 🧠 Architecture principale
 
 ### Backend
