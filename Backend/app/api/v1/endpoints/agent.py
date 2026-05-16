@@ -56,8 +56,10 @@ class AgentHeartbeat(BaseModel):
     serial_number: str
     hardware_info: dict[str, Any]
 
+from app.core.websocket import manager
+...
 @router.post("/heartbeat")
-def heartbeat(
+async def heartbeat(
     payload: AgentHeartbeat,
     db: Session = Depends(get_db)
 ):
@@ -70,4 +72,14 @@ def heartbeat(
     
     asset.hardware_info = payload.hardware_info
     db.commit()
+    
+    # Broadcast to all connected UI clients
+    await manager.broadcast({
+        "type": "HEARTBEAT",
+        "asset_id": str(asset.id),
+        "serial_number": asset.serial_number,
+        "status": "online",
+        "hostname": asset.name
+    })
+    
     return {"status": "ok"}

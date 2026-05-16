@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Plus, LogOut, UserCircle2, Search } from 'lucide-react'
 import { apiClient } from '@/lib/api'
@@ -9,6 +9,8 @@ import { AssetTable } from '@/components/dashboard/AssetTable'
 import { StatsOverview } from '@/components/dashboard/StatsOverview'
 import { AuthForms } from '@/components/auth/AuthForms'
 import { AssetForm } from '@/components/dashboard/AssetForm'
+import { useRealtime } from '@/lib/use-realtime'
+import { cn } from '@/lib/utils'
 
 const TOKEN_STORAGE_KEY = 'nebra.auth.token'
 
@@ -20,6 +22,14 @@ function App() {
   const queryClient = useQueryClient()
   const [token, setToken] = useState<string>(() => getInitialToken())
   const [search, setSearch] = useState('')
+  const { lastEvent, isConnected } = useRealtime()
+
+  // Auto-refresh assets on heartbeat
+  useEffect(() => {
+    if (lastEvent?.type === 'HEARTBEAT') {
+      queryClient.invalidateQueries({ queryKey: ['assets', token] })
+    }
+  }, [lastEvent, token, queryClient])
 
   const healthQuery = useQuery({
     queryKey: ['health'],
@@ -109,7 +119,8 @@ function App() {
                 <CardHeader>
                   <div className="flex items-center justify-between gap-2">
                     <CardTitle className="text-base text-white">Assets Management</CardTitle>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className={cn("h-1.5 w-1.5 rounded-full", isConnected ? "bg-network-teal shadow-[0_0_8px_rgba(0,166,153,0.8)]" : "bg-red-500")} title={isConnected ? "Realtime Connected" : "Realtime Disconnected"} />
                       API: {healthQuery.isPending ? 'connexion...' : healthQuery.data?.status ?? 'indisponible'}
                     </div>
                   </div>
