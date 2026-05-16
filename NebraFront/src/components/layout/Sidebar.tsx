@@ -1,12 +1,18 @@
-import { Activity, FolderKanban, LayoutGrid, ShieldCheck } from 'lucide-react'
+import { Activity, FolderKanban, LayoutGrid, ShieldCheck, Settings as SettingsIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export function Sidebar() {
+interface SidebarProps {
+  activeTab: string
+  onTabChange: (tab: string) => void
+}
+
+export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   const navItems = [
-    { icon: LayoutGrid, active: true },
-    { icon: FolderKanban, active: false },
-    { icon: Activity, active: false },
-    { icon: ShieldCheck, active: false },
+    { id: 'inventory', icon: LayoutGrid, label: 'Inventory' },
+    { id: 'projects', icon: FolderKanban, label: 'Projects' },
+    { id: 'activity', icon: Activity, label: 'Activity' },
+    { id: 'security', icon: ShieldCheck, label: 'Security' },
+    { id: 'settings', icon: SettingsIcon, label: 'Settings' },
   ]
 
   return (
@@ -15,13 +21,15 @@ export function Sidebar() {
         <img src="/logo-icon.png" alt="Nebra" className="h-7 w-7 object-contain" />
       </div>
       <nav className="space-y-2">
-        {navItems.map((item, index) => (
+        {navItems.map((item) => (
           <button
-            key={index}
+            key={item.id}
+            onClick={() => onTabChange(item.id)}
             className={cn(
               'flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition hover:text-foreground',
-              item.active && 'bg-nebra-blue/20 text-nebra-blue',
+              activeTab === item.id && 'bg-nebra-blue/20 text-nebra-blue',
             )}
+            title={item.label}
             type="button"
           >
             <item.icon className="h-4 w-4" />

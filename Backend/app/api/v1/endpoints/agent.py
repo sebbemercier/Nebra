@@ -77,17 +77,31 @@ async def heartbeat(
     alerts = []
     hw = payload.hardware_info
     
+    # Fetch thresholds from DB or use defaults
+    from app.models.setting import Setting
+    
+    def get_threshold(key: str, default: float) -> float:
+        s = db.scalar(select(Setting).where(Setting.key == key))
+        try:
+            return float(s.value) if s else default
+        except (ValueError, TypeError):
+            return default
+
+    cpu_threshold = get_threshold("threshold_cpu", 95.0)
+    ram_threshold = get_threshold("threshold_ram", 90.0)
+    disk_threshold = get_threshold("threshold_disk", 90.0)
+    
     # Check RAM
-    if hw.get("memory", {}).get("percentage", 0) > 90:
+    if hw.get("memory", {}).get("percentage", 0) > ram_threshold:
         alerts.append({"type": "MEMORY_HIGH", "message": f"High RAM usage: {hw['memory']['percentage']}%"})
     
     # Check Disks
     for disk in hw.get("disks", []):
-        if disk.get("percentage", 0) > 90:
+        if disk.get("percentage", 0) > disk_threshold:
             alerts.append({"type": "DISK_FULL", "message": f"Disk {disk['mountpoint']} is nearly full ({disk['percentage']}%)"})
             
     # Check CPU
-    if hw.get("cpu", {}).get("total_usage", 0) > 95:
+    if hw.get("cpu", {}).get("total_usage", 0) > cpu_threshold:
         alerts.append({"type": "CPU_HIGH", "message": f"Critical CPU usage: {hw['cpu']['total_usage']}%"})
     
     # Broadcast heartbeat

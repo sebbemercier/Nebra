@@ -10,6 +10,7 @@ import { StatsOverview } from '@/components/dashboard/StatsOverview'
 import { AuthForms } from '@/components/auth/AuthForms'
 import { AssetForm } from '@/components/dashboard/AssetForm'
 import { Notifications } from '@/components/dashboard/Notifications'
+import { SettingsPanel } from '@/components/dashboard/SettingsPanel'
 import { useRealtime } from '@/lib/use-realtime'
 import { cn } from '@/lib/utils'
 
@@ -23,6 +24,7 @@ function App() {
   const queryClient = useQueryClient()
   const [token, setToken] = useState<string>(() => getInitialToken())
   const [search, setSearch] = useState('')
+  const [activeTab, setActiveTab] = useState('inventory')
   const { lastEvent, isConnected } = useRealtime()
 
   // Auto-refresh assets on heartbeat
@@ -83,7 +85,7 @@ function App() {
     <div className="min-h-screen bg-background p-6 text-foreground">
       <div className="mx-auto max-w-[1280px] rounded-2xl border border-border/80 bg-system-dark/90 shadow-2xl shadow-black/35">
         <div className="grid min-h-[86vh] grid-cols-[58px_1fr]">
-          <Sidebar />
+          <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
           <main className="p-5">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -115,51 +117,60 @@ function App() {
               </div>
             </div>
 
-            <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
-              <Card className="border-border/80 bg-card/95">
-                <CardHeader>
-                  <div className="flex items-center justify-between gap-2">
-                    <CardTitle className="text-base text-white">Assets Management</CardTitle>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <div className={cn("h-1.5 w-1.5 rounded-full", isConnected ? "bg-network-teal shadow-[0_0_8px_rgba(0,166,153,0.8)]" : "bg-red-500")} title={isConnected ? "Realtime Connected" : "Realtime Disconnected"} />
-                      API: {healthQuery.isPending ? 'connexion...' : healthQuery.data?.status ?? 'indisponible'}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {!token ? (
-                    <>
-                      <div className="mb-6 flex justify-center">
-                        <img src="/logo-full.png" alt="Nebra Logo" className="h-16 object-contain" />
+            {activeTab === 'inventory' ? (
+              <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+                <Card className="border-border/80 bg-card/95">
+                  <CardHeader>
+                    <div className="flex items-center justify-between gap-2">
+                      <CardTitle className="text-base text-white">Assets Management</CardTitle>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className={cn("h-1.5 w-1.5 rounded-full", isConnected ? "bg-network-teal shadow-[0_0_8px_rgba(0,166,153,0.8)]" : "bg-red-500")} title={isConnected ? "Realtime Connected" : "Realtime Disconnected"} />
+                        API: {healthQuery.isPending ? 'connexion...' : healthQuery.data?.status ?? 'indisponible'}
                       </div>
-                      <AuthForms
-                        onLogin={(email, pass) => loginMutation.mutate({ userEmail: email, userPassword: pass })}
-                      onRegister={(email, name, pass) =>
-                        registerMutation.mutate({ userEmail: email, userFullName: name, userPassword: pass })
-                      }
-                      isPending={loginMutation.isPending || registerMutation.isPending}
-                      error={(loginMutation.error as Error) || (registerMutation.error as Error)}
-                    />
-                  ) : (
-                    <>
-                      <AssetForm
-                        onSubmit={(payload) => createAssetMutation.mutate(payload)}
-                        isPending={createAssetMutation.isPending}
-                        error={createAssetMutation.error as Error}
-                      />
-                      <AssetTable
-                        assets={filteredAssets}
-                        isLoading={assetsQuery.isPending}
-                        error={assetsQuery.error as Error}
-                        token={token}
-                      />
-                    </>
-                  )}
-                </CardContent>
-              </Card>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {!token ? (
+                      <>
+                        <div className="mb-6 flex justify-center">
+                          <img src="/logo-full.png" alt="Nebra Logo" className="h-16 object-contain" />
+                        </div>
+                        <AuthForms
+                          onLogin={(email, pass) => loginMutation.mutate({ userEmail: email, userPassword: pass })}
+                          onRegister={(email, name, pass) =>
+                            registerMutation.mutate({ userEmail: email, userFullName: name, userPassword: pass })
+                          }
+                          isPending={loginMutation.isPending || registerMutation.isPending}
+                          error={(loginMutation.error as Error) || (registerMutation.error as Error)}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <AssetForm
+                          onSubmit={(payload) => createAssetMutation.mutate(payload)}
+                          isPending={createAssetMutation.isPending}
+                          error={createAssetMutation.error as Error}
+                        />
+                        <AssetTable
+                          assets={filteredAssets}
+                          isLoading={assetsQuery.isPending}
+                          error={assetsQuery.error as Error}
+                          token={token}
+                        />
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
 
-              <StatsOverview assets={filteredAssets} token={token} />
-            </div>
+                <StatsOverview assets={filteredAssets} token={token} />
+              </div>
+            ) : activeTab === 'settings' ? (
+              <SettingsPanel token={token} />
+            ) : (
+              <div className="flex h-[60vh] items-center justify-center text-muted-foreground italic">
+                This module ({activeTab}) is coming soon.
+              </div>
+            )}
           </main>
         </div>
       </div>

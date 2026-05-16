@@ -8,6 +8,7 @@ from app.core.config import settings
 from app.core.database import Base, engine
 from app.models.asset import Asset  # noqa: F401
 from app.models.user import User  # noqa: F401
+from app.models.setting import Setting  # noqa: F401
 
 
 @asynccontextmanager
