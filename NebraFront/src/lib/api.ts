@@ -114,4 +114,10 @@ export const apiClient = {
     request<AssetActivity[]>(`/api/v1/assets/${assetId}/history`, {
       headers: { Authorization: `Bearer ${token}` },
     }),
+  updateAsset: (assetId: string, payload: Partial<AssetCreatePayload>, token: string) =>
+    request<Asset>(`/api/v1/assets/${assetId}`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify(payload),
+    }),
 }

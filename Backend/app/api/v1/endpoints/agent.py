@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from app.models.alert import Alert
 
 from app.core.database import get_db
 from app.repositories.assets import AssetRepository
@@ -22,10 +23,6 @@ def register_agent(
     payload: AgentRegistration,
     db: Session = Depends(get_db)
 ):
-    # For now, we use a default "system" owner or similar if we don't have one.
-    # In a real app, you might use an API key to identify the site/owner.
-    # Here, we'll just try to find the first user as owner for demo purposes, 
-    # or a dedicated system user.
     from app.models.user import User
     from sqlalchemy import select
     
@@ -46,7 +43,6 @@ def register_agent(
         )
     except IntegrityError:
         db.rollback()
-        # If it exists, we might want to update it. Let's handle heartbeat for updates.
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Asset already registered"
@@ -57,7 +53,7 @@ class AgentHeartbeat(BaseModel):
     hardware_info: dict[str, Any]
 
 from app.core.websocket import manager
-...
+
 @router.post("/heartbeat")
 async def heartbeat(
     payload: AgentHeartbeat,
@@ -73,11 +69,9 @@ async def heartbeat(
     asset.hardware_info = payload.hardware_info
     db.commit()
 
-    # Detect alerts
-    alerts = []
+    alerts_to_send = []
     hw = payload.hardware_info
     
-    # Fetch thresholds from DB or use defaults
     from app.models.setting import Setting
     
     def get_threshold(key: str, default: float) -> float:
@@ -91,27 +85,31 @@ async def heartbeat(
     ram_threshold = get_threshold("threshold_ram", 90.0)
     disk_threshold = get_threshold("threshold_disk", 90.0)
     
-    # Check RAM
     if hw.get("memory", {}).get("percentage", 0) > ram_threshold:
-        alerts.append({"type": "MEMORY_HIGH", "message": f"High RAM usage: {hw['memory']['percentage']}%"})
+        alert = Alert(asset_id=asset.id, type="MEMORY_HIGH", message=f"High RAM usage: {hw['memory']['percentage']}%")
+        db.add(alert)
+        alerts_to_send.append({"type": alert.type, "message": alert.message})
     
-    # Check Disks
     for disk in hw.get("disks", []):
         if disk.get("percentage", 0) > disk_threshold:
-            alerts.append({"type": "DISK_FULL", "message": f"Disk {disk['mountpoint']} is nearly full ({disk['percentage']}%)"})
+            alert = Alert(asset_id=asset.id, type="DISK_FULL", message=f"Disk {disk['mountpoint']} is nearly full ({disk['percentage']}%)")
+            db.add(alert)
+            alerts_to_send.append({"type": alert.type, "message": alert.message})
             
-    # Check CPU
     if hw.get("cpu", {}).get("total_usage", 0) > cpu_threshold:
-        alerts.append({"type": "CPU_HIGH", "message": f"Critical CPU usage: {hw['cpu']['total_usage']}%"})
+        alert = Alert(asset_id=asset.id, type="CPU_HIGH", message=f"Critical CPU usage: {hw['cpu']['total_usage']}%")
+        db.add(alert)
+        alerts_to_send.append({"type": alert.type, "message": alert.message})
     
-    # Broadcast heartbeat
+    db.commit()
+
     await manager.broadcast({
         "type": "HEARTBEAT",
         "asset_id": str(asset.id),
         "serial_number": asset.serial_number,
         "status": "online",
         "hostname": asset.name,
-        "alerts": alerts
+        "alerts": alerts_to_send
     })
     
     return {"status": "ok"}

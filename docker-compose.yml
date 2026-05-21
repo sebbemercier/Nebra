@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
 
   backend:
     build:
@@ -21,7 +21,7 @@ services:
     container_name: nebra-backend
     restart: always
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/nebra
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/nebra
       SECRET_KEY: ${SECRET_KEY:-your-secret-key-here}
       APP_NAME: Nebra
       AUTO_CREATE_TABLES: "true"

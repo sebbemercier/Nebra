@@ -9,7 +9,7 @@ from app.api.deps import get_current_user
 from app.core.database import get_db
 from app.models.user import User
 from app.repositories.assets import AssetRepository
-from app.schemas.asset import AssetCreate, AssetRead, ActivityRead, AssetStatus
+from app.schemas.asset import AssetCreate, AssetRead, ActivityRead, AssetStatus, AssetUpdate
 
 router = APIRouter(prefix="/assets", tags=["assets"])
 
@@ -38,6 +38,20 @@ def create_asset(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Asset serial number already exists",
         ) from exc
+
+
+@router.patch("/{asset_id}", response_model=AssetRead)
+def update_asset(
+    asset_id: UUID,
+    payload: AssetUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    repo = AssetRepository(db)
+    asset = repo.update(asset_id, current_user.id, **payload.model_dump(exclude_unset=True))
+    if not asset:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    return asset
 
 
 @router.post("/{asset_id}/checkout", response_model=AssetRead)

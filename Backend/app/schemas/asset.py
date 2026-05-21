@@ -20,6 +20,13 @@ class AssetCreate(BaseModel):
     status: AssetStatus = AssetStatus.STOCK
     warranty_expiry: datetime | None = None
 
+class AssetUpdate(BaseModel):
+    name: str | None = None
+    asset_type: str | None = None
+    location: str | None = None
+    status: AssetStatus | None = None
+    warranty_expiry: datetime | None = None
+
 
 class ActivityRead(BaseModel):
     id: UUID
@@ -43,5 +50,16 @@ class AssetRead(BaseModel):
     owner_id: UUID
     assigned_user_id: UUID | None
     created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+class AlertRead(BaseModel):
+    id: UUID
+    asset_id: UUID
+    type: str
+    message: str
+    is_resolved: bool
+    created_at: datetime
+    resolved_at: datetime | None
 
     model_config = {"from_attributes": True}

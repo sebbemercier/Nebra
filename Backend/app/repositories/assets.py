@@ -97,3 +97,23 @@ class AssetRepository:
     def get_history(self, asset_id: UUID) -> Sequence[AssetActivity]:
         query = select(AssetActivity).where(AssetActivity.asset_id == asset_id).order_by(AssetActivity.created_at.desc())
         return self.db.scalars(query).all()
+
+    def update(self, asset_id: UUID, actor_id: UUID, **kwargs) -> Asset | None:
+        asset = self.get(asset_id)
+        if not asset:
+            return None
+        
+        for key, value in kwargs.items():
+            if hasattr(asset, key):
+                setattr(asset, key, value)
+        
+        activity = AssetActivity(
+            asset_id=asset_id,
+            actor_id=actor_id,
+            action="updated",
+            details=f"Updated fields: {', '.join(kwargs.keys())}"
+        )
+        self.db.add(activity)
+        self.db.commit()
+        self.db.refresh(asset)
+        return asset

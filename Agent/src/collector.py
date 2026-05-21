@@ -2,11 +2,19 @@ import platform
 import socket
 import psutil
 import uuid
+import getpass
 
 class Collector:
     @staticmethod
     def get_hostname():
         return socket.gethostname()
+
+    @staticmethod
+    def get_current_user():
+        try:
+            return getpass.getuser()
+        except Exception:
+            return "unknown"
 
     @staticmethod
     def get_os_info():
@@ -15,7 +23,8 @@ class Collector:
             "release": platform.release(),
             "version": platform.version(),
             "machine": platform.machine(),
-            "processor": platform.processor()
+            "processor": platform.processor(),
+            "current_user": Collector.get_current_user()
         }
 
     @staticmethod
@@ -55,7 +64,7 @@ class Collector:
                     "free": usage.free,
                     "percentage": usage.percent
                 })
-            except PermissionError:
+            except (PermissionError, OSError):
                 continue
         return disk_data
 
@@ -76,12 +85,9 @@ class Collector:
 
     @staticmethod
     def get_serial_number():
-        # Fallback to a stable ID if real serial is hard to get without root/admin
-        # On Windows: wmic bios get serialnumber
-        # On Linux: cat /sys/class/dmi/id/product_serial
-        # For this prototype, we'll use a hashed version of the hostname + MAC of first interface
-        # In a real production agent, we'd use more robust methods.
         try:
+            # On macOS/Linux, we can try to get a more stable ID
+            # For this prototype, hash of MAC is a good fallback
             mac = uuid.getnode()
             return f"NB-{socket.gethostname().upper()}-{str(mac)[-6:]}"
         except Exception:
@@ -90,6 +96,7 @@ class Collector:
     def collect_all(self):
         return {
             "hostname": self.get_hostname(),
+            "current_user": self.get_current_user(),
             "os": self.get_os_info(),
             "cpu": self.get_cpu_info(),
             "memory": self.get_memory_info(),
