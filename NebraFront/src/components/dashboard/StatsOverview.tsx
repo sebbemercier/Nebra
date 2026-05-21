@@ -1,6 +1,6 @@
 import { CalendarClock, ShieldCheck, Server, Monitor, Package, Info } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Asset } from '@/lib/api'
+import type { Asset } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 interface StatsOverviewProps {
@@ -78,11 +78,11 @@ export function StatsOverview({ assets, token }: StatsOverviewProps) {
                 </span>
               </div>
               <p className="text-[10px] text-muted-foreground italic mt-2 border-t border-border/40 pt-2">
-                All data is encrypted with JWT (AES-256) and synced in real-time via WebSockets.
+                Données synchronisées en temps réel via WebSocket avec l'agent Nebra.
               </p>
             </>
           ) : (
-            <p className="text-muted-foreground italic">Sign in to view real-time compliance metrics.</p>
+            <p className="text-muted-foreground italic">Connectez-vous pour voir les métriques de conformité en temps réel.</p>
           )}
         </CardContent>
       </Card>
@@ -97,9 +97,9 @@ export function StatsOverview({ assets, token }: StatsOverviewProps) {
         <CardContent>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-network-teal animate-pulse" />
-            <span className="text-xs text-slate-200">Cloud Infrastructure Operational</span>
+            <span className="text-xs text-slate-200">Plateforme Opérationnelle</span>
           </div>
-          <p className="mt-1 text-[10px] text-muted-foreground">Region: EU-West-1 (Paris)</p>
+          <p className="mt-1 text-[10px] text-muted-foreground">Tous les services actifs</p>
         </CardContent>
       </Card>
     </div>
