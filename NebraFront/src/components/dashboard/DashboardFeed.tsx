@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Activity, Bell, Cpu, User, CheckCircle2 } from 'lucide-react'
+import { Activity, Bell, Cpu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface DashboardFeedProps {
@@ -24,9 +24,9 @@ export function DashboardFeed({ lastEvent }: DashboardFeedProps) {
   }, [lastEvent])
 
   return (
-    <Card className="border-border/60 bg-card/60 backdrop-blur-sm shadow-xl mt-4">
-      <CardHeader className="pb-2 border-b border-border/40">
-        <CardTitle className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white">
+    <Card className="mt-4 border-white/10 bg-card/90 shadow-lg">
+      <CardHeader className="border-b border-white/10 pb-2">
+        <CardTitle className="flex items-center gap-2 text-xs font-black uppercase text-white">
           <Bell className="h-3.5 w-3.5 text-nebra-blue" />
           Live Event Hub
         </CardTitle>
@@ -34,20 +34,22 @@ export function DashboardFeed({ lastEvent }: DashboardFeedProps) {
       <CardContent className="p-0">
         <div className="max-h-[300px] overflow-y-auto scrollbar-none">
           {events.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground opacity-40">
-               <Activity className="h-8 w-8 mb-2" />
-               <p className="text-[10px] uppercase font-semibold">Monitoring signals...</p>
+            <div className="feed-empty flex flex-col items-center justify-center py-10 text-muted-foreground">
+               <span className="feed-radar mb-3">
+                 <Activity className="h-8 w-8" />
+               </span>
+               <p className="text-[10px] font-black uppercase">Monitoring signals...</p>
             </div>
           ) : (
-            events.map((event) => (
-              <div key={event.id} className="group border-b border-border/40 p-3 hover:bg-white/5 transition-colors">
+            events.map((event, index) => (
+              <div key={event.id} className="feed-row group border-b border-white/10 p-3 transition-colors hover:bg-white/5" style={{ animationDelay: `${index * 35}ms` }}>
                 <div className="flex items-start gap-3">
                   <div className={cn(
-                    "mt-0.5 rounded-full p-1",
+                    "mt-0.5 rounded-full border p-1",
                     event.type === 'HEARTBEAT' ? "bg-network-teal/10 text-network-teal" : "bg-nebra-blue/10 text-nebra-blue"
                   )}>
                     {event.alerts?.length > 0 ? (
-                      <Bell className="h-3 w-3 animate-bounce" />
+                      <Bell className="h-3 w-3" />
                     ) : event.type === 'HEARTBEAT' ? (
                       <Cpu className="h-3 w-3" />
                     ) : (

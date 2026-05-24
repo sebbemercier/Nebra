@@ -21,9 +21,9 @@ export function AssetDetails({ asset, token }: AssetDetailsProps) {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-border/60 bg-muted/20">
+        <Card className="border-white/10 bg-white/[0.035] shadow-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <CardTitle className="flex items-center gap-2 text-[10px] font-black uppercase text-muted-foreground">
               <Layout className="h-3 w-3 text-nebra-blue" />
               Identity
             </CardTitle>
@@ -44,9 +44,9 @@ export function AssetDetails({ asset, token }: AssetDetailsProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 bg-muted/20">
+        <Card className="border-white/10 bg-white/[0.035] shadow-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <CardTitle className="flex items-center gap-2 text-[10px] font-black uppercase text-muted-foreground">
               <UserIcon className="h-3 w-3 text-network-teal" />
               Current User
             </CardTitle>
@@ -64,9 +64,9 @@ export function AssetDetails({ asset, token }: AssetDetailsProps) {
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 bg-muted/20">
+        <Card className="border-white/10 bg-white/[0.035] shadow-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <CardTitle className="flex items-center gap-2 text-[10px] font-black uppercase text-muted-foreground">
               <Clock className="h-3 w-3 text-nebra-blue" />
               Lifecycle
             </CardTitle>
@@ -86,9 +86,9 @@ export function AssetDetails({ asset, token }: AssetDetailsProps) {
 
       <MetricsPanel asset={asset} />
 
-      <Card className="border-border/40 bg-card/20">
-        <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white">
+      <Card className="border-white/10 bg-card/50 shadow-lg">
+        <CardHeader className="pb-2 border-b border-white/10">
+          <CardTitle className="flex items-center gap-2 text-xs font-black uppercase text-white">
             <Activity className="h-4 w-4 text-nebra-blue" />
             Audit Trail
           </CardTitle>

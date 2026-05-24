@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, type ReactNode } from 'react'
 
 const TOKEN_STORAGE_KEY = 'nebra.auth.token'
 

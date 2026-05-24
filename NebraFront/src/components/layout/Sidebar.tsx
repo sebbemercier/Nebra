@@ -16,9 +16,10 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   ]
 
   return (
-    <aside className="flex flex-col border-r border-border/40 bg-card/30 py-6">
+    <aside className="sidebar-rail flex flex-col border-r border-white/10 bg-card/90 py-6">
       <div className="mb-10 px-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-nebra-blue to-nebra-blue/60 p-2 shadow-lg shadow-nebra-blue/20">
+        <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-nebra-blue to-network-teal p-2 shadow-lg shadow-nebra-blue/20">
+          <span className="brand-glint" />
           <img src="/logo-icon.png" alt="Nebra" className="h-full w-full object-contain brightness-0 invert" />
         </div>
       </div>
@@ -29,18 +30,22 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             key={item.id}
             onClick={() => onTabChange(item.id)}
             className={cn(
-              'group relative flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200',
+              'group relative flex h-10 w-10 items-center justify-center rounded-lg transition-colors duration-200',
               activeTab === item.id 
-                ? 'bg-nebra-blue text-white shadow-md shadow-nebra-blue/20' 
-                : 'text-muted-foreground hover:bg-muted/10 hover:text-white',
+                ? 'bg-white/[0.08] text-white shadow-md shadow-nebra-blue/20 ring-1 ring-nebra-blue/35' 
+                : 'text-muted-foreground hover:bg-white/[0.055] hover:text-white',
             )}
             title={item.label}
+            aria-label={item.label}
             type="button"
           >
-            <item.icon className={cn("h-5 w-5", activeTab === item.id ? "scale-110" : "group-hover:scale-110")} />
+            <item.icon className={cn("h-5 w-5 transition-transform", activeTab === item.id ? "scale-110 text-network-teal" : "group-hover:scale-110")} />
             {activeTab === item.id && (
-              <div className="absolute -left-3 h-5 w-1 rounded-r-full bg-nebra-blue" />
+              <div className="absolute -left-3 h-6 w-1 rounded-r-full bg-network-teal shadow-[0_0_18px_rgba(0,166,153,0.8)]" />
             )}
+            <span className="pointer-events-none absolute left-12 z-20 rounded-lg border border-white/10 bg-system-dark px-2 py-1 text-[10px] font-bold text-white opacity-0 shadow-xl transition group-hover:translate-x-1 group-hover:opacity-100">
+              {item.label}
+            </span>
           </button>
         ))}
       </nav>

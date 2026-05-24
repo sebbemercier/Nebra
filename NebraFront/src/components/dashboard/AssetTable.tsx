@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { Suspense, lazy, memo, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { Asset } from '@/lib/api'
 import { apiClient } from '@/lib/api'
 import { Button } from '@/components/ui/button'
-import { History, UserPlus, Package, AlertTriangle, X, ChevronRight, User as UserIcon } from 'lucide-react'
-import { AssetDetails } from './AssetDetails'
+import { History, UserPlus, Package, AlertTriangle, X, ChevronRight, User as UserIcon, Monitor } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface AssetTableProps {
@@ -14,7 +13,18 @@ interface AssetTableProps {
   token: string
 }
 
-export function AssetTable({ assets, isLoading, error, token }: AssetTableProps) {
+const statusStyles: Record<Asset['status'], string> = {
+  deployed: 'bg-network-teal/15 text-network-teal border-network-teal/30 shadow-[0_0_18px_rgba(0,166,153,0.08)]',
+  stock: 'bg-nebra-blue/15 text-nebra-blue border-nebra-blue/30 shadow-[0_0_18px_rgba(0,123,255,0.08)]',
+  maintenance: 'bg-amber-400/15 text-amber-300 border-amber-300/30',
+  archived: 'bg-slate-400/10 text-slate-400 border-slate-400/20',
+}
+
+const AssetDetails = lazy(() =>
+  import('./AssetDetails').then((module) => ({ default: module.AssetDetails })),
+)
+
+export const AssetTable = memo(function AssetTable({ assets, isLoading, error, token }: AssetTableProps) {
   const queryClient = useQueryClient()
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
 
@@ -49,15 +59,24 @@ export function AssetTable({ assets, isLoading, error, token }: AssetTableProps)
             <X className="h-4 w-4" />
           </Button>
         </div>
-        <AssetDetails asset={selectedAsset} token={token} />
+        <Suspense
+          fallback={
+            <div className="rounded-xl border border-white/10 bg-background/50 p-8 text-center text-xs font-bold uppercase text-muted-foreground">
+              Loading asset telemetry...
+            </div>
+          }
+        >
+          <AssetDetails asset={selectedAsset} token={token} />
+        </Suspense>
       </div>
     )
   }
 
   return (
-    <div className="overflow-hidden rounded-md border border-border/80 bg-card/50">
-      <table className="w-full text-left text-sm">
-        <thead className="bg-muted/35 text-[10px] uppercase tracking-wider text-muted-foreground">
+    <div className="overflow-hidden rounded-xl border border-white/10 bg-background/50 shadow-inner">
+      <div className="max-w-full overflow-x-auto">
+        <table className="w-full min-w-[820px] text-left text-sm">
+        <thead className="bg-white/[0.035] text-[10px] uppercase text-muted-foreground">
           <tr>
             <th className="px-3 py-3 font-medium">Asset ID</th>
             <th className="px-3 py-3 font-medium">Name</th>
@@ -89,21 +108,28 @@ export function AssetTable({ assets, isLoading, error, token }: AssetTableProps)
           {!isLoading && !error && assets.length === 0 ? (
             <tr>
               <td colSpan={6} className="px-3 py-10 text-center text-muted-foreground">
-                No assets found.
+                <div className="flex flex-col items-center gap-3">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-nebra-blue">
+                    <Monitor className="h-6 w-6" />
+                  </span>
+                  <span>No assets found.</span>
+                </div>
               </td>
             </tr>
           ) : null}
-          {assets.map((asset) => (
+          {assets.map((asset, index) => (
             <tr 
               key={asset.id} 
-              className="group border-t border-border/40 text-muted-foreground hover:bg-muted/10 transition-colors cursor-pointer"
+              className="asset-row group cursor-pointer border-t border-white/10 text-muted-foreground transition-colors hover:bg-white/[0.045]"
               onClick={() => setSelectedAsset(asset)}
+              style={{ animationDelay: `${index * 28}ms` }}
             >
               <td className="px-3 py-3 text-[11px] font-mono text-nebra-blue/70 group-hover:text-nebra-blue">
                 {asset.id.slice(0, 8)}
               </td>
               <td className="px-3 py-3 text-slate-200">
                 <div className="flex items-center gap-2 font-medium">
+                  <span className="asset-spark" />
                   {asset.name}
                   {asset.hardware_info?.os?.system && (
                     <span className="text-[10px] text-muted-foreground font-normal">
@@ -112,7 +138,7 @@ export function AssetTable({ assets, isLoading, error, token }: AssetTableProps)
                   )}
                   {(asset.hardware_info?.cpu?.total_usage > 90 || 
                     asset.hardware_info?.memory?.percentage > 90) && (
-                    <AlertTriangle className="h-3.5 w-3.5 text-red-500 animate-pulse" />
+                    <AlertTriangle className="h-3.5 w-3.5 text-red-500" />
                   )}
                 </div>
               </td>
@@ -120,12 +146,8 @@ export function AssetTable({ assets, isLoading, error, token }: AssetTableProps)
               <td className="px-3 py-3">
                 <span
                   className={cn(
-                    'rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-tight',
-                    asset.status === 'deployed'
-                      ? 'bg-network-teal/15 text-network-teal border border-network-teal/30'
-                      : asset.status === 'stock'
-                        ? 'bg-nebra-blue/15 text-nebra-blue border border-nebra-blue/30'
-                        : 'bg-yellow-500/15 text-yellow-500 border border-yellow-500/30',
+                    'rounded-full border px-2.5 py-1 text-[9px] font-black uppercase',
+                    statusStyles[asset.status],
                   )}
                 >
                   {asset.status.replace('_', ' ')}
@@ -181,7 +203,8 @@ export function AssetTable({ assets, isLoading, error, token }: AssetTableProps)
             </tr>
           ))}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   )
-}
+})

@@ -23,12 +23,278 @@
 body {
   margin: 0;
   font-family:
-    Inter,
-    'Segoe UI',
-    Roboto,
-    Helvetica,
+    "Aptos",
+    "SF Pro Text",
+    "Segoe UI Variable",
+    "Helvetica Neue",
     Arial,
     sans-serif;
-  background: rgb(var(--background));
+  background:
+    linear-gradient(135deg, rgba(0, 123, 255, 0.08), transparent 34%),
+    linear-gradient(315deg, rgba(0, 166, 153, 0.08), transparent 38%),
+    rgb(var(--background));
   color: rgb(var(--foreground));
+}
+
+::selection {
+  background: rgb(var(--secondary) / 0.28);
+  color: white;
+}
+
+.dashboard-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.ops-grid {
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(135deg, rgba(0, 123, 255, 0.08), transparent 42%),
+    linear-gradient(315deg, rgba(0, 166, 153, 0.075), transparent 45%);
+  background-size: 42px 42px, 42px 42px, auto, auto;
+  mask-image: linear-gradient(180deg, black, transparent 84%);
+  opacity: 0.5;
+}
+
+.app-frame,
+.command-panel,
+.metric-tile,
+.sidebar-rail,
+.radar-card,
+.asset-form-panel {
+  position: relative;
+}
+
+.app-frame::before,
+.command-panel::before {
+  display: none;
+}
+
+.metric-tile {
+  overflow: hidden;
+  border-radius: 0.875rem;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(255 255 255 / 0.04);
+  padding: 0.9rem;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+.metric-tile::after {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, #007bff, #00a699, #f5c15d);
+  transform: scaleX(0.35);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+
+.metric-tile:hover::after {
+  transform: scaleX(1);
+}
+
+.live-pill {
+  display: inline-flex;
+  height: 2.75rem;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(255 255 255 / 0.04);
+  padding-inline: 0.9rem;
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: rgb(var(--muted-foreground));
+}
+
+.signal-rail {
+  position: relative;
+  display: block;
+  height: 2.5rem;
+  width: 0.25rem;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.signal-rail::after {
+  position: absolute;
+  inset-inline: 0;
+  top: 20%;
+  height: 42%;
+  content: "";
+  background: #00a699;
+  box-shadow: 0 0 12px rgb(0 166 153 / 0.55);
+}
+
+.brand-glint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 10%, rgb(255 255 255 / 0.34), transparent 60%);
+  transform: translateX(120%);
+  transition: transform 260ms ease;
+}
+
+.sidebar-rail:hover .brand-glint {
+  transform: translateX(-120%);
+}
+
+.asset-row {
+  animation: row-in 420ms ease both;
+}
+
+.asset-spark {
+  height: 0.5rem;
+  width: 0.5rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #00a699;
+  box-shadow: 0 0 10px rgb(0 166 153 / 0.35);
+}
+
+.asset-form-trigger {
+  background-image: linear-gradient(90deg, rgb(0 123 255 / 0.05), rgb(0 166 153 / 0.035));
+}
+
+.asset-form-panel {
+  overflow: hidden;
+}
+
+.asset-form-panel::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, #007bff, #00a699);
+}
+
+.dial-ring {
+  display: grid;
+  height: 6.8rem;
+  width: 6.8rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  box-shadow: 0 0 18px rgb(0 166 153 / 0.1);
+}
+
+.dial-inner {
+  display: grid;
+  height: 5rem;
+  width: 5rem;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(var(--card) / 0.94);
+}
+
+.dial-inner span {
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1;
+  color: white;
+}
+
+.dial-inner small {
+  margin-top: -1rem;
+  font-size: 0.58rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: rgb(var(--muted-foreground));
+}
+
+.mini-stat {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: rgb(255 255 255 / 0.04);
+  padding: 0.65rem;
+  font-size: 0.65rem;
+  color: rgb(var(--muted-foreground));
+}
+
+.mini-stat strong {
+  color: white;
+}
+
+.live-dot {
+  height: 0.62rem;
+  width: 0.62rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #00a699;
+  box-shadow: 0 0 0 5px rgb(0 166 153 / 0.08), 0 0 14px rgb(0 166 153 / 0.55);
+}
+
+.feed-empty {
+  opacity: 0.72;
+}
+
+.feed-radar {
+  display: grid;
+  height: 4rem;
+  width: 4rem;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background:
+    linear-gradient(135deg, rgb(0 123 255 / 0.12), rgb(0 166 153 / 0.08)),
+    rgb(255 255 255 / 0.035);
+  color: #00a699;
+}
+
+.feed-row {
+  animation: row-in 420ms ease both;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .dashboard-shell {
+    padding: 0;
+  }
+
+  .app-frame {
+    min-height: 100vh;
+    border-radius: 0;
+    border-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
 }

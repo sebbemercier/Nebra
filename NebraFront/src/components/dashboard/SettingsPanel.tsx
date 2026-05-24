@@ -1,16 +1,8 @@
-import { Settings as SettingsIcon, Save } from 'lucide-react'
+import { Settings as SettingsIcon, Save, SlidersHorizontal } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { apiClient } from '@/lib/api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
-
-interface Setting {
-  key: string
-  value: string
-  category: string
-  description: string
-}
 
 export function SettingsPanel({ token }: { token: string }) {
   const queryClient = useQueryClient()
@@ -41,16 +33,16 @@ export function SettingsPanel({ token }: { token: string }) {
         },
         body: JSON.stringify({ value })
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['settings'] })
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['settings', token] })
   })
 
   if (isLoading) return <div className="p-4 text-muted-foreground text-sm">Loading settings...</div>
 
   return (
     <div className="space-y-6">
-      <Card className="border-border/80 bg-card/95">
+      <Card className="border-white/10 bg-card/90 shadow-xl shadow-black/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base text-white">
+          <CardTitle className="flex items-center gap-2 text-base font-black text-white">
             <SettingsIcon className="h-4 w-4 text-nebra-blue" />
             Monitoring Thresholds
           </CardTitle>
@@ -64,16 +56,19 @@ export function SettingsPanel({ token }: { token: string }) {
             { key: 'threshold_ram', label: 'RAM Usage (%)', desc: 'Critical threshold for memory usage' },
             { key: 'threshold_disk', label: 'Disk Usage (%)', desc: 'Critical threshold for storage capacity' },
           ].map((field) => (
-            <div key={field.key} className="grid gap-2 border-b border-border/50 pb-4 last:border-0">
-              <div className="flex items-center justify-between">
+            <div key={field.key} className="grid gap-3 rounded-xl border border-white/10 bg-white/[0.035] p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-100">{field.label}</p>
+                  <p className="flex items-center gap-2 text-sm font-bold text-slate-100">
+                    <SlidersHorizontal className="h-3.5 w-3.5 text-network-teal" />
+                    {field.label}
+                  </p>
                   <p className="text-xs text-muted-foreground">{field.desc}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
-                    className="w-20 rounded-md border border-border/90 bg-muted/30 px-2 py-1 text-sm text-right outline-none"
+                    className="w-20 rounded-lg border border-white/10 bg-background/70 px-2 py-1.5 text-right text-sm outline-none focus:border-nebra-blue/50"
                     value={localValues[field.key] || ''}
                     onChange={(e) => setLocalValues(prev => ({ ...prev, [field.key]: e.target.value }))}
                   />
@@ -88,6 +83,14 @@ export function SettingsPanel({ token }: { token: string }) {
                   </Button>
                 </div>
               </div>
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={localValues[field.key] || 0}
+                onChange={(e) => setLocalValues(prev => ({ ...prev, [field.key]: e.target.value }))}
+                className="accent-nebra-blue"
+              />
             </div>
           ))}
         </CardContent>

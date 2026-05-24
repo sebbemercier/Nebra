@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import type { AssetCreatePayload } from '@/lib/api'
 import { Button } from '@/components/ui/button'
-import { Plus, X, Laptop, Hash, MapPin, Tag } from 'lucide-react'
+import { Plus, X, Laptop, Hash, MapPin, Tag, Sparkles } from 'lucide-react'
 
 interface AssetFormProps {
   onSubmit: (payload: AssetCreatePayload) => void
   isPending: boolean
   error: Error | null
 }
+
+const assetTypes = ['WORKSTATION', 'LAPTOP', 'SERVER', 'MOBILE']
 
 export function AssetForm({ onSubmit, isPending, error }: AssetFormProps) {
   const [isOpen, setIsOpen] = useState(false)
@@ -37,7 +39,7 @@ export function AssetForm({ onSubmit, isPending, error }: AssetFormProps) {
         variant="ghost" 
         size="sm" 
         onClick={() => setIsOpen(true)}
-        className="mb-4 h-9 w-full justify-start gap-2 border border-dashed border-border/60 text-muted-foreground hover:border-nebra-blue/50 hover:text-nebra-blue"
+        className="asset-form-trigger mb-4 h-11 w-full justify-start gap-2 rounded-xl border border-dashed border-white/15 bg-white/[0.025] text-muted-foreground hover:border-nebra-blue/50 hover:text-nebra-blue"
       >
         <Plus className="h-4 w-4" />
         Register new asset...
@@ -46,7 +48,7 @@ export function AssetForm({ onSubmit, isPending, error }: AssetFormProps) {
   }
 
   return (
-    <div className="mb-6 rounded-lg border border-nebra-blue/30 bg-nebra-blue/5 p-4 shadow-[0_0_15px_rgba(0,123,255,0.05)]">
+    <div className="asset-form-panel mb-6 rounded-xl border border-nebra-blue/30 bg-nebra-blue/5 p-4 shadow-[0_0_25px_rgba(0,123,255,0.08)]">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-white flex items-center gap-2">
           <Laptop className="h-4 w-4 text-nebra-blue" />
@@ -56,12 +58,29 @@ export function AssetForm({ onSubmit, isPending, error }: AssetFormProps) {
           <X className="h-4 w-4" />
         </Button>
       </div>
+
+      <div className="mb-4 flex flex-wrap gap-2">
+        {assetTypes.map((type) => (
+          <button
+            key={type}
+            type="button"
+            onClick={() => handleChange('asset_type', type)}
+            className={`rounded-full border px-3 py-1 text-[10px] font-black transition ${
+              form.asset_type === type
+                ? 'border-nebra-blue/50 bg-nebra-blue/15 text-nebra-blue'
+                : 'border-white/10 bg-white/[0.04] text-muted-foreground hover:text-white'
+            }`}
+          >
+            {type}
+          </button>
+        ))}
+      </div>
       
       <form onSubmit={handleSubmit} className="grid gap-3 md:grid-cols-2">
         <div className="relative">
           <Laptop className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
           <input
-            className="w-full rounded-md border border-border/80 bg-background/50 py-2 pl-9 pr-3 text-xs outline-none focus:border-nebra-blue/50 transition-colors"
+            className="w-full rounded-lg border border-white/10 bg-background/60 py-2.5 pl-9 pr-3 text-xs outline-none transition-colors focus:border-nebra-blue/50"
             placeholder="Asset Name (e.g. MacBook Pro)"
             value={form.name}
             onChange={(e) => handleChange('name', e.target.value)}
@@ -70,7 +89,7 @@ export function AssetForm({ onSubmit, isPending, error }: AssetFormProps) {
         <div className="relative">
           <Tag className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
           <input
-            className="w-full rounded-md border border-border/80 bg-background/50 py-2 pl-9 pr-3 text-xs outline-none focus:border-nebra-blue/50 transition-colors"
+            className="w-full rounded-lg border border-white/10 bg-background/60 py-2.5 pl-9 pr-3 text-xs outline-none transition-colors focus:border-nebra-blue/50"
             placeholder="Type (e.g. WORKSTATION)"
             value={form.asset_type}
             onChange={(e) => handleChange('asset_type', e.target.value)}
@@ -79,7 +98,7 @@ export function AssetForm({ onSubmit, isPending, error }: AssetFormProps) {
         <div className="relative">
           <Hash className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
           <input
-            className="w-full rounded-md border border-border/80 bg-background/50 py-2 pl-9 pr-3 text-xs outline-none focus:border-nebra-blue/50 transition-colors"
+            className="w-full rounded-lg border border-white/10 bg-background/60 py-2.5 pl-9 pr-3 text-xs outline-none transition-colors focus:border-nebra-blue/50"
             placeholder="Serial Number"
             value={form.serial_number}
             onChange={(e) => handleChange('serial_number', e.target.value)}
@@ -88,7 +107,7 @@ export function AssetForm({ onSubmit, isPending, error }: AssetFormProps) {
         <div className="relative">
           <MapPin className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
           <input
-            className="w-full rounded-md border border-border/80 bg-background/50 py-2 pl-9 pr-3 text-xs outline-none focus:border-nebra-blue/50 transition-colors"
+            className="w-full rounded-lg border border-white/10 bg-background/60 py-2.5 pl-9 pr-3 text-xs outline-none transition-colors focus:border-nebra-blue/50"
             placeholder="Location"
             value={form.location}
             onChange={(e) => handleChange('location', e.target.value)}
@@ -111,8 +130,9 @@ export function AssetForm({ onSubmit, isPending, error }: AssetFormProps) {
             type="submit"
             size="sm"
             disabled={!isValid || isPending}
-            className="bg-nebra-blue text-xs hover:bg-nebra-blue/90"
+            className="gap-2 bg-nebra-blue text-xs hover:bg-nebra-blue/90"
           >
+            <Sparkles className="h-3.5 w-3.5" />
             {isPending ? 'Registering...' : 'Complete Registration'}
           </Button>
         </div>

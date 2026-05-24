@@ -25,9 +25,9 @@ export function MetricsPanel({ asset }: MetricsPanelProps) {
 
   return (
     <div className="grid gap-4 mt-4 lg:grid-cols-2">
-      <Card className="border-border/40 bg-card/40 backdrop-blur-md">
+      <Card className="border-white/10 bg-card/90 shadow-lg">
         <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+          <CardTitle className="text-xs font-black uppercase text-muted-foreground flex items-center gap-2">
             <Cpu className="h-3 w-3 text-network-teal" /> CPU Performance
           </CardTitle>
         </CardHeader>
@@ -54,7 +54,7 @@ export function MetricsPanel({ asset }: MetricsPanelProps) {
                   stroke="#00A699" 
                   fillOpacity={1} 
                   fill="url(#colorCpu)" 
-                  isAnimationActive={false}
+                  isAnimationActive
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -66,9 +66,9 @@ export function MetricsPanel({ asset }: MetricsPanelProps) {
         </CardContent>
       </Card>
 
-      <Card className="border-border/40 bg-card/40 backdrop-blur-md">
+      <Card className="border-white/10 bg-card/90 shadow-lg">
         <CardHeader className="pb-2">
-          <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+          <CardTitle className="text-xs font-black uppercase text-muted-foreground flex items-center gap-2">
             <Database className="h-3 w-3 text-nebra-blue" /> Memory Footprint
           </CardTitle>
         </CardHeader>
@@ -95,7 +95,7 @@ export function MetricsPanel({ asset }: MetricsPanelProps) {
                   stroke="#007BFF" 
                   fillOpacity={1} 
                   fill="url(#colorRam)" 
-                  isAnimationActive={false}
+                  isAnimationActive
                 />
               </AreaChart>
             </ResponsiveContainer>

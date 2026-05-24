@@ -48,8 +48,8 @@ export function LoginPage() {
       {/* Animated background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-nebra-blue/5 via-transparent to-network-teal/5" />
-        <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-nebra-blue/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-network-teal/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
+        <div className="absolute top-0 -left-1/4 h-1/2 w-1/2 rounded-full bg-nebra-blue/10 blur-3xl" />
+        <div className="absolute bottom-0 -right-1/4 h-1/2 w-1/2 rounded-full bg-network-teal/10 blur-3xl" />
         
         {/* Grid pattern overlay */}
         <div className="absolute inset-0 opacity-[0.015]" style={{
@@ -65,8 +65,8 @@ export function LoginPage() {
           {/* Left side - Branding */}
           <div className="hidden lg:block space-y-8 animate-in fade-in slide-in-from-left duration-1000">
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-nebra-blue/10 border border-nebra-blue/20 backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-nebra-blue animate-pulse" />
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-nebra-blue/10 border border-nebra-blue/20">
+                <Sparkles className="h-4 w-4 text-nebra-blue" />
                 <span className="text-xs font-bold uppercase tracking-wider text-nebra-blue">ITAM & CMDB</span>
               </div>
               
@@ -92,7 +92,7 @@ export function LoginPage() {
               ].map((feature, i) => (
                 <div 
                   key={i}
-                  className="flex items-start gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 backdrop-blur-sm hover:bg-white/[0.04] transition-all duration-300"
+                  className="flex items-start gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors duration-300"
                   style={{ animationDelay: `${i * 100}ms` }}
                 >
                   <div className="p-2 rounded-lg bg-gradient-to-br from-nebra-blue/20 to-network-teal/20">
@@ -109,9 +109,9 @@ export function LoginPage() {
 
           {/* Right side - Auth Form */}
           <div className="animate-in fade-in slide-in-from-right duration-1000 delay-300">
-            <div className="relative rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] backdrop-blur-xl p-8 shadow-2xl">
+            <div className="relative rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.03] p-8 shadow-2xl">
               {/* Glow effect */}
-              <div className="absolute -inset-[1px] bg-gradient-to-r from-nebra-blue/20 via-network-teal/20 to-nebra-blue/20 rounded-3xl blur-xl -z-10 opacity-50" />
+              <div className="absolute -inset-[1px] bg-gradient-to-r from-nebra-blue/15 via-network-teal/15 to-nebra-blue/15 rounded-3xl -z-10 opacity-50" />
               
               <div className="space-y-6">
                 {/* Header */}
@@ -142,7 +142,7 @@ export function LoginPage() {
                           type="text"
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-nebra-blue/50 focus:border-transparent transition-all"
+                          className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-nebra-blue/50 focus:border-transparent transition-colors"
                           placeholder="John Doe"
                           required
                         />
@@ -160,7 +160,7 @@ export function LoginPage() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-nebra-blue/50 focus:border-transparent transition-all"
+                        className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-nebra-blue/50 focus:border-transparent transition-colors"
                         placeholder="you@company.com"
                         required
                       />
@@ -177,7 +177,7 @@ export function LoginPage() {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-nebra-blue/50 focus:border-transparent transition-all"
+                        className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-nebra-blue/50 focus:border-transparent transition-colors"
                         placeholder="••••••••"
                         required
                       />
@@ -194,7 +194,7 @@ export function LoginPage() {
                   <Button
                     type="submit"
                     disabled={isPending}
-                    className="w-full h-12 rounded-xl bg-gradient-to-r from-nebra-blue to-network-teal hover:opacity-90 transition-all font-bold text-white shadow-lg shadow-nebra-blue/25 group"
+                    className="w-full h-12 rounded-xl bg-gradient-to-r from-nebra-blue to-network-teal hover:opacity-90 transition-opacity font-bold text-white shadow-lg shadow-nebra-blue/25 group"
                   >
                     {isPending ? (
                       <span className="flex items-center gap-2">
